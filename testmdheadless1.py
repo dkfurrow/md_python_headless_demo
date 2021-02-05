@@ -44,6 +44,7 @@ from com.infinitekind.moneydance.model import CurrencyType
 from com.infinitekind.moneydance.model import CurrencySnapshot
 from com.infinitekind.moneydance.model import CurrencyTable
 from com.infinitekind.moneydance.model import CurrencyUtil
+from com.infinitekind.moneydance.model import MoneydanceSyncableItem
 #%%
 print("Importing useful Java Classes...")
 from java.io import File

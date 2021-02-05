@@ -48,6 +48,7 @@ from com.infinitekind.moneydance.model import CurrencyType
 from com.infinitekind.moneydance.model import CurrencySnapshot
 from com.infinitekind.moneydance.model import CurrencyTable
 from com.infinitekind.moneydance.model import CurrencyUtil
+from com.infinitekind.moneydance.model import MoneydanceSyncableItem
 #%%
 print("Importing useful Java Classes...")
 from java.io import File
@@ -107,11 +108,34 @@ for ind in list(range(8,len(all_transaction_info.columns))):
 print(all_transaction_info.iloc[:10, :].to_string(index=False))
 
 #%%
+print("now get table of currency items with last price data")
+all_currencies_info.sort_values(by=['Ticker', 'Date'], inplace=True)
+currency_update_df = all_currencies_info.loc[:, ['id', 'Name', 'Ticker', 'Date', 'PricebyDate']]\
+    .pivot_table(index = ['id', 'Name', 'Ticker'], aggfunc='last')
+currency_update_df.reset_index(inplace=True)
+currency_update_df.set_index(keys = 'Ticker', inplace=True)
+print(currency_update_df)
 #%%
+print("So let's take a look at Citigroup, and update the price...")
+new_price_info = ('C', 20100607, 3.64)
+print("For ticker {0} on dateInt {1:d} we want to assign a price of {2:.2f}".format(*new_price_info))
+
 #%%
+uuid = currency_update_df[currency_update_df.index == new_price_info[0]].loc[new_price_info[0], 'id']
+print('UUID for {0} is {1}'.format(new_price_info[0], uuid))
 #%%
+currencyType = accountBook.getCurrencyByUUID(uuid)
+currencySnapshot = currencyType.addSnapshotInt(new_price_info[1], 1 / new_price_info[2])
+print("Syncing AccountBook...")
+syncSuccess = currencySnapshot.syncItem()
+print("SyncSuccess? {0}".format(syncSuccess))
+isSaved = accountBook.save()
+print("AccountBook Saved? {0}".format(isSaved))
 #%%
+new_rate = currencyType.getRateByDate(new_price_info[1], None)
+print("Confirm New Price {0:.2f}".format(1. / new_rate))
 #%%
+
 #%%
 #%%
 #%%
