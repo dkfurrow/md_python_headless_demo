@@ -8,6 +8,12 @@ NOTE: The jar file here is similar to the *.mxt file in investment reports file:
 https://github.com/dkfurrow/moneydance-investment-reports
 The only modification is that moneydance.jar is bundled WITH investment reports classes
 To do so, use the 'zipgroupfileset' command as in  buildbundled.xml
+******
+Copyright (c) 2021, Dale Furrow
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the
+LICENSE file in the root directory of this source tree. 
 """
 #%%
 import numpy as np
