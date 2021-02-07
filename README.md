@@ -6,6 +6,9 @@ This is a demonstration of how to access a [moneydance](https://infinitekind.com
 
 You'll need a python installation of some kind that includes [pandas](https://pandas.pydata.org/) and [JPype](https://jpype.readthedocs.io/en/latest/).  For windows I prefer [Winpython](https://winpython.github.io/) as it's easy to use and contains pandas in the distribution. You'll need a JDK that is compatible with moneydance (the repo contains the latest preview build jar of moneydance [2021.1 (3034) as of this writing].  [OpenJDK](https://jdk.java.net/15/) worked for me, and is consistent with the java package bundled with moneydance.  Version as of this writing is openjdk 15.0.2 2021-01-19. 
 
+### Demonstration Video
+If you want to see how this should look when you run it, I have made [this desktop video](https://vimeo.com/509314311) to demonstrate.
+
 ### Prerequisites
 
 It's not strictly necessary to run these scripts, but it's helpful to have a decent IDE, my favorite is [Pycharm](https://www.jetbrains.com/pycharm/features/), especially when you use the [cell mode](https://plugins.jetbrains.com/plugin/7858-pycharm-cell-mode) plugin.  

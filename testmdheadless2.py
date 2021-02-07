@@ -88,7 +88,7 @@ def yes_or_no(question):
     else:
         return yes_or_no("Uhhhh... please enter ")
 if yes_or_no("Do you want to clear prefs?"):
-    print("clearning prefs...")
+    print("clearing prefs...")
     Prefs.clearAllPrefs()
 else:
     print("leaving prefs alone")
