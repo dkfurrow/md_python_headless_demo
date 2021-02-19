@@ -71,9 +71,10 @@ from java.io import File
 from jpype import JString
 #%%
 # get a config.dict file (could build one instead)
+print("printing some settings from User Preferences (this assumes you already have configuration file\nin your "
+      "home directory...")
 prefsFile = File(str(Path.home() / '.moneydance/config.dict'))
 preferences = UserPreferences(prefsFile)
-print("printing some settings from User Preferences...")
 print(preferences.getSetting("backup.location"))
 print(preferences.getSetting("current_accountbook"))
 #%%
@@ -89,14 +90,11 @@ mdTestFolder = "resources\\testMD02.moneydance"
 print("Moneydance Data File exists? {0}, in {1}".format(os.path.exists(mdTestFolder), mdTestFolder))
 mdFileJava = File(mdTestFolder)
 #%%
-print("get moneydance file, attach it to main, this will start the application gui...")
+print("get test moneydance file from this project, attach it to main, this will start the application gui...")
 main.setInitialFile(mdFileJava)
 startBook = AccountBookWrapper.wrapperForFolder(mdFileJava)
 main.setCurrentBook(startBook)
-#%%
-print("start application...since it is reset to test file, there is a warning produced, you have to accept it...")
-print("problem is, starting application shuts down other functions...")
-# main.startApplication()
+
 #%%
 print("initialize a moneydance gui object")
 mdGui = MoneydanceGUI(main)
@@ -109,8 +107,6 @@ for account in root_account.getSubAccounts():
     if account_name == 'Checking':
         print("found Checking Account...uuid {0}".format(account.getUUID()))
         checking_account = account
-
-
 #%%
 print("get path to sample qif file...")
 path_to_qif_file = str(Path('./resources/sample.qif').absolute())
@@ -126,7 +122,8 @@ mdGui.showImportUI(JString(md_uri), checking_account)
 # 1659-command-line-arguments-where-can-i-find-the-documentation
 print("alternatively, just import the file")
 md_uri = "moneydance:importfile:?file={0}".format(path_to_qif_file)
-mdGui.importFile(md_uri, checking_account)
+print("moneydance uri: {0}".format(md_uri))
+mdGui.importFile(File(path_to_qif_file), False, checking_account)
 #%%
 #%%
 #%%
