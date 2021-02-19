@@ -1,0 +1,216 @@
+"""
+This is a sample import script (for md internal use)
+Source: https://infinitekind.tenderapp.com/discussions/moneydance-development/513-new-python-qif-import-script
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Import QIF files into MoneyDance (MD), add new transactions only if they don't yet exist in MD.
+% Match criteria for new transactions are exact string matches ( == ) for Value, Description & Date after converting the date to MD format.
+% 
+% The QIF file parsing is pretty simple minded, it looks only for P (Payee), D (Date) and T (Amount) tokens. Anything else is ignored.
+% 
+% The script scans a directory (importDir, hardcoded, must have trailing /) 
+% for QIF (or qif) files and imports transactions from them. The account into
+% which transactions are imported is decided by trying to match an account's Account Number somewhere in the
+% QIF filename. Set the account number under Account->Edit Account in the MD menu bar. MD seems quite happy with strings
+% if your bank uses some other naming convention.
+%
+% The script works on OSX, it'll probably work on Linux but there may be issues with path separators in Windows.
+%
+% Author: Kim Aldis. http://www.kim-aldis.co.uk
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+"""
+
+# import sys
+# from java.io import File 															# No Python os.path in Jython. Grr
+# from com.moneydance.apps.md.model import *   								# needed to use MD clases directly
+#
+# True = 1
+# False = 0
+#
+# class IncomingTransaction:
+#
+# 	def __init__( self, fp ):
+#
+# 		while 1:
+#
+# 			# read a line, use strip to remove whitespace & \n
+# 			#
+# 			line = fp.readline().strip()
+#
+# 			if not line:  																# EOF, set done flag and return
+# 				self.End = 1
+# 				break
+# 			else:
+# 				self.End = None
+#
+# 			if line[0] == 'P' : 														# payee (Description in MD)
+# 				self.Payee = line.replace( 'P', '', 1 )
+#
+# 			if line[0] == 'D' :
+# 				Date = line.replace( 'D', '', 1 ).split( '-' ) 				# mm-dd-yy in QIF
+# 				self.Date = int( '20' + Date[2] + Date[0] + Date[1] ) 	# YYYYMMDD in MD
+#
+# 			if line[0] == 'T' :  													# amount
+#
+# 				# because we get all sorts of rounding errors using Python type conversion we'll
+# 				# convert it to the *100 MD format by just removing the period
+# 				# then converting it to int
+# 				# This only works so long as Amount gets its full two decimal places ( nnn.nn )
+# 				# 1.1, for example, won't work.
+# 				# This works for all my bank's QIF files. If it doesn't work for you I'm open
+# 				# to suggestions but be aware, int( Amount +0.5 ) will give rounding errors
+# 				#
+# 				self.Amount = line.replace( 'T', '', 1 ) 						# strip the leading 'T' token
+# 				self.Amount = int( self.Amount.replace( '.', '', 1 ) ) 	# delete the decimal point.
+#
+#
+# 			if line[0] == '^' : 														# '^' : end of QIF transaction marker.
+# 				break
+#
+#
+# 	def Match( self, txn ):
+#
+# 		if txn.getDescription() == self.Payee and txn.getDateInt() == self.Date and txn.getValue() == self.Amount :
+# 			return True
+# 		else:
+# 			return False
+#
+# def Import( acc ):
+#
+# 	ra = moneydance.getRootAccount()
+# 	txns = ra.getTransactionSet().getTransactionsForAccount(acc.Account).toArray()
+#
+# 	fp = open( acc.FileName, 'r' )
+#
+# 	TransactionsImported = 0
+#
+# 	while 1:
+#
+# 		# Pull the next transaction from the QIF file
+# 		#
+# 		tIn = IncomingTransaction(fp)
+#
+# 		if tIn.End != None:
+# 			break
+#
+# 		match = False
+#
+# 		# Look for a transaction in this account that matches the incoming one for Payee, Amount & Date
+# 		#
+# 		for txn in txns:
+# 			if tIn.Match( txn ):
+# 				match = txn
+# 				break
+#
+# 		# No match found, create a new transaction
+# 		#
+# 		if not match:
+#
+# 			print "New Transaction " + tIn.Payee + ' : ' + str( tIn.Date ) + ' : ' + str( tIn.Amount )
+#
+# 			newTns =  ParentTxn( tIn.Date, 								# Date
+# 				  						tIn.Date, 								# Tax Date
+# 										tIn.Date, 								# Date Entered
+# 										"", 			 							# Check Number
+# 										acc.Account, 							# Account
+# 										tIn.Payee,  							# Description (Payee)
+# 										"", 										# Memo
+# 										-1, 										# Transaction ID
+# 										ParentTxn.STATUS_RECONCILING 	# Transaction Status
+# 									)
+#
+# 			newTns.setTransferType(AbstractTxn.TRANSFER_TYPE_BANK)
+# 			newTns.setIsNew(1)
+#
+# 			# Look for a close match and pull its category.
+# 			# If no match use the account's default category
+# 			# MD categories are treated as accounts under the hood
+# 			#
+# 			matched = ra.getTransactionSet().findBestMatch( tIn.Payee, tIn.Amount, acc.Account)
+# 			if matched != None:
+# 				split = matched.getSplit( 0 ) # we're assuming only one split here ever. Under the circumstances this should be safe
+# 				acct2 = split.getAccount()
+# 			else:
+# 				acct2 = AccountUtil.getDefaultCategoryForAcct( acc.Account )
+#
+# 			print "\tAssigned to Category: " + repr( acct2.getFullAccountName() )
+#
+# 			# Create a new split & add it to the MD transaction.
+# 			# MD transactions require at least one split, value & category (2nd account) are held in the split, not the tx
+# 			#
+# 			split = SplitTxn( newTns, -tIn.Amount, 0, 1.0, acct2, "", -1, ParentTxn.STATUS_RECONCILING )
+# 			newTns.addSplit( split )
+#
+# 			# insert the new transaction
+# 			#
+# 			ra.getTransactionSet().addNewTxn(newTns)
+# 			ra.refreshAccountBalances()
+#
+# 			TransactionsImported = TransactionsImported + 1
+#
+# 	fp.close()
+#
+# 	print "Total Transactions Imported: %d"%(TransactionsImported)
+#
+# ##############################################################
+# #
+# # Find an MD account with a Card or BankAccount number that's somewhere in the filename
+# #
+# class Account:
+#
+# 	def __init__( self, inFilePath ):
+#
+# 		self.Name = None
+# 		self.FileName = None
+#
+# 		# Pick up all the accounts in the DB
+# 		#
+# 		ra = moneydance.getRootAccount()
+# 		subs = ra.getSubAccounts()
+#
+# 		# no os.path, use Java classes. grrr.
+# 		#
+# 		f = File( inFilePath )
+#
+# 		inFileName = f.getName()
+# 		importDir = f.getParent() + '/'
+#
+# 		for sub in subs:
+#
+# 			AccountType = sub.getAccountType()
+#
+# 			if AccountType == sub.ACCOUNT_TYPE_BANK :
+# 				AccountNumber = str( sub.getBankAccountNumber() )
+# 			elif AccountType == sub.ACCOUNT_TYPE_CREDIT_CARD:
+# 				AccountNumber = str( sub.getCardNumber() )
+#
+# 			if AccountNumber != "" and inFileName.find( AccountNumber ) >= 0:
+# 				self.Name = sub.getAccountName()
+# 				self.FileName = importDir + inFileName
+# 				self.Account = sub
+# 				print " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+# 				print "Importing : " + self.FileName + " into account '" + sub.getAccountName() + "'"
+# 				print " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+# 				return
+#
+# print " ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
+# print " +-------- Import "
+# print " ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
+#
+# importDir = '/Users/Frank/Documents/Dev/MoneyDance/Python/QIFs/'
+# importDir = '/Users/Frank/Downloads/'
+#
+# # No Python file objects, use Java classes
+# #
+# d = File( importDir )
+#
+# # For every Qif file in the directory
+# #
+# for FileName in d.list():
+# 	if FileName[-4:].lower() == '.qif':
+# 		acc = Account( importDir + FileName )
+# 		if acc.Name != None:
+# 			Import( acc )
+#
