@@ -1,0 +1,57 @@
+
+#imports & globals
+# import com.infinitekind.moneydance.model as m
+# book = moneydance.getCurrentAccountBook()
+# currencyTable = book.getCurrencies()
+#
+#
+# def md_add_security(name, symbol, decPlaces=2, currID='USD', hideInUI=False, price=None, secID=None, prefix=None, suffix=None):
+#     #---------------------------------------------------------------------------
+#     # Purpose: Add a new security to the Moneydance security master
+# 	#          Replicates the functionality in the "New Security" dialog &
+# 	#          the Currency and Current Price options of the "Currency/Security History" dialog
+#     # Written: 2018-09-16 by md_oz
+#     # Amended:
+#     # Comment: Thank you to whitedavidp and jaraco for sharing their code and expertise, that were the basis of this function, see below
+# 	#		   https://github.com/jaraco/moneydance/blob/master/migration.py
+#     #          http://help.infinitekind.com/discussions/moneydance-development/2025-how-to-add-a-security-from-a-python-script
+#     # Input:   name:      security name (eg. 'Bank of America Corporation')
+# 	#		   symbol:    security symbol (eg. 'BAC')
+# 	#		   decPlaces: max decimal places for storing rates/prices (integer)
+# 	#		   currID:    Moneydance currency id (eg. 'AUD' for Australian dollars)
+# 	#		   hideInUI:  hide/show security on sumamry page (boolean)
+# 	#		   price:     security price in its native currency (float)
+# 	#		   secID:     textual security ID (string)
+# 	#		   prefix:    display prefix (string)
+# 	#		   suffix:    display suffix (string)
+#     # Output:  None, no error checking included
+#     #---------------------------------------------------------------------------
+#
+# 	#create new security instance
+# 	newCurrency = m.CurrencyType(currencyTable) #create new currency instance
+# 	newCurrency.setCurrencyType(m.CurrencyType.Type.SECURITY) #set currency type as a security
+#
+# 	#process required fields
+# 	newCurrency.setName(name)
+# 	newCurrency.setTickerSymbol(symbol)
+# 	newCurrency.setDecimalPlaces(decPlaces) #always set prior to setUserRate
+#
+# 	#process optional fields
+# 	if currID: #only needed for non-BaseType securities (eg. non-USD securities in my case)
+# 		if currID != currencyTable.getBaseType().getIDString():
+# 			newCurrency.setParameter('relative_to_currid', currID)
+# 	if hideInUI:
+# 		newCurrency.setHideInUI(hideInUI)
+# 	if secID:
+# 		newCurrency.setIDString(secID)
+# 	if prefix:
+# 		newCurrency.setPrefix(prefix)
+# 	if suffix:
+# 		newCurrency.setSuffix(suffix)
+# 	if price and currID:
+# 		userRate = 1.0 / price #note 1.0 forces a float result
+# 		newCurrency.setUserRate(userRate, currencyTable.getCurrencyByIDString(currID))	# warning: rate should be set after setting decimal places;
+# 																						# setting the decimal places afterward will change the rate
+# 	newCurrency.syncItem() #create security
+#
+# 	return

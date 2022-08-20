@@ -63,9 +63,14 @@ from java.io import File
 #%%
 print("Importing useful Investment Reports Classes...")
 from com.moneydance.modules.features.invextension import ReportConfig
+from com.moneydance.modules.features.invextension import AggregationController  # enum INVACCT, TICKER, SECTYPE
 from com.moneydance.modules.features.invextension import BulkSecInfo
 from com.moneydance.modules.features.invextension import TotalFromToReport
 from com.moneydance.modules.features.invextension import TransactionValues
+from com.moneydance.modules.features.invextension import Prefs
+from com.moneydance.modules.features.invextension import DateRange
+from com.moneydance.modules.features.invextension import TotalFromToReport
+from com.moneydance.modules.features.invextension import TotalSnapshotReport
 
 #%%
 print("prove moneydance data file exists, load it into java File object")
@@ -83,7 +88,7 @@ accountBook = wrapper.getBook()
 root_account = accountBook.getRootAccount()
 #%%
 print("call up a Report Configuration object from investment reports suitable for testing")
-reportConfig = ReportConfig.getTestReportConfig(root_account, False)
+reportConfig = ReportConfig.getTestReportConfig(root_account, False, AggregationController.INVACCT)
 print("Here is that report config: \n{0}".format(reportConfig))
 #%%
 print("now call up a 'BulkSecInfo object from investment reports")

@@ -63,11 +63,15 @@ from java.io import File
 #%%
 print("Importing useful Investment Reports Classes...")
 from com.moneydance.modules.features.invextension import ReportConfig
+from com.moneydance.modules.features.invextension import AggregationController  # enum INVACCT, TICKER, SECTYPE
 from com.moneydance.modules.features.invextension import BulkSecInfo
 from com.moneydance.modules.features.invextension import TotalFromToReport
 from com.moneydance.modules.features.invextension import TransactionValues
-from com.moneydance.modules.features.invextension import ReportControlFrame
 from com.moneydance.modules.features.invextension import Prefs
+from com.moneydance.modules.features.invextension import ReportControlFrame
+from com.moneydance.modules.features.invextension import DateRange
+from com.moneydance.modules.features.invextension import TotalFromToReport
+from com.moneydance.modules.features.invextension import TotalSnapshotReport
 
 #%%
 print("prove moneydance data file exists, load it into a frame element for investment reports")
@@ -97,16 +101,9 @@ print("now get the report frame")
 print("To replicate regression test, choose 'FromTo' report from 20090601 to 20100601")
 frame = ReportControlFrame(mdFileJava)
 #%%
-
 #%%
-reportConfig = ReportConfig.getTestReportConfig(root_account, False)
-
 #%%
-
 #%%
-
-#%%
-
 #%%
 #%%
 #%%
