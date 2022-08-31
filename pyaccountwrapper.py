@@ -6,6 +6,7 @@ This is a python-based wrapper class for moneydance data
 import sys
 import traceback
 from pprint import pprint
+from pathlib import Path
 #%%
 import numpy as np
 import pandas as pd

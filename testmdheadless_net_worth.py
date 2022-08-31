@@ -36,6 +36,7 @@ for account_wrapper in account_wrappers:
 
 # %%
 check_dates = [20090824, 20100328]
+print("generate net worth calculations for dates {0}".format(', '.join([str(x) for x in check_dates])))
 account_worths = []
 for account_wrapper in account_wrappers:
     for check_date in check_dates:
